@@ -125,38 +125,7 @@ title(fig, 'Silver out of Potosí, and what silver bought in China', 'Potosí pe
 plt.subplots_adjust(left=.07, right=.93, top=.78, bottom=.08)
 fig.savefig('out/assets/timeline_silver.png', facecolor=PAPER); plt.close(fig)
 
-# ------------------------------------------------------------------ 3. scatter-plot matrix, 1560-1644
-V = [('silver_tonnes_5yr_mean', 'Potosí silver\n(t, five-year mean)'), ('rice_g_silver_per_liter_decade', 'Rice in silver\n(g per litre, decade)'),
-     ('share_famine', 'Famine\n(share of places)'), ('share_drought', 'Drought\n(share of places)'), ('share_flood', 'Flood\n(share of places)')]
-d = yr.dropna(subset=[v for v, _ in V]).copy()
-late = d.reign == 'Chongzhen'
-k = len(V)
-fig, axs = plt.subplots(k, k, figsize=(11, 11))
-for i, (vi, li) in enumerate(V):
-    for j, (vj, lj) in enumerate(V):
-        ax = axs[i, j]
-        x, y = d[vj].astype(float), d[vi].astype(float)
-        if i == j:
-            vals = x
-            lo, hi = vals.min(), vals.max(); pad = (hi - lo) * .06 or .01
-            ax.set_xlim(lo - pad, hi + pad); ax.set_ylim(lo - pad, hi + pad)
-            hx = ax.twinx(); hx.set_yticks([]); hx.spines[['top', 'right', 'left']].set_visible(False)
-            e = np.histogram_bin_edges(vals, 14)
-            hx.hist(vals, bins=e, color=LIGHT, edgecolor=PAPER); hx.hist(vals[late], bins=e, color=RED, alpha=.85, edgecolor=PAPER)
-        else:
-            ax.scatter(x[~late], y[~late], s=11, c=BLUE, alpha=.45, lw=0)
-            ax.scatter(x[late], y[late], s=16, c=RED, alpha=.9, lw=0)
-            r = np.corrcoef(x, y)[0, 1]
-            ax.text(.04, .88, f'r = {r:.2f}', transform=ax.transAxes, fontsize=7.5, color=INK)
-        ax.tick_params(labelsize=6.5, length=2)
-        if i < k - 1: ax.set_xticklabels([])
-        if j > 0: ax.set_yticklabels([])
-        if i == k - 1: ax.set_xlabel(lj, fontsize=8)
-        if j == 0: ax.set_ylabel(li, fontsize=8)
-        ax.spines[['top', 'right']].set_visible(False)
-title(fig, 'Silver, prices and disaster in late Ming China', f'{len(d)} years, 1560 to 1644. Red: the Chongzhen reign (1628 to 1644), the last of the dynasty. r: Pearson correlation.', y=.965)
-plt.subplots_adjust(left=.1, right=.98, top=.9, bottom=.08, wspace=.08, hspace=.08)
-fig.savefig('out/assets/scatter_matrix.png', facecolor=PAPER); plt.close(fig)
+# ------------------------------------------------------------------ 3. scatter-plot matrix: made by correlations.py, with r, confidence intervals and p-values
 
 # ------------------------------------------------------------------ 4. what the Potosí treasury lived on
 ORDER = ['silver taxes', 'mercury sales', 'mint and bullion', 'tribute', 'sales tax (alcabala)', 'other revenue']
